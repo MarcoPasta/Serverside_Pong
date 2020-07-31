@@ -6,10 +6,10 @@
  */
 let winHeight = 500; 
 let winWidth = 500;
-var leftPaddleHeight = 150;
-var leftPaddleWidth = 35;
-var leftPaddleX = 50; 
-var leftPaddleY = winHeight/2-150/2;
+// var leftPaddleHeight = 150;
+// var leftPaddleWidth = 35;
+// var leftPaddleX = 50; 
+// var leftPaddleY = winHeight/2-150/2;
 var rightPaddleHeight = 150;
 var rightPaddleWitdh = 35;
 var rightPaddleX = winWidth-85;
@@ -17,11 +17,20 @@ var rightPaddleY = winHeight/2-150/2;
 
 var speed = 10;
 
+let leftPaddle = {
+"height": 150,
+"width": 35,
+"x": 50, 
+"y": winHeight/2-150/2
+}
 
-class Ball{
-    var x;
-    var y;
-    
+let ball = {
+    "x": winWidth/2,
+    "y": winHeight/2,
+    "height": 10,
+    "width": 10, 
+    "xSpeed": 10,
+    "ySpeed": 10
 }
 
 /**
@@ -36,11 +45,12 @@ function setup() {
  */
 function draw() {
     background(220);
-    rect(rightPaddleX, rightPaddleY, rightPaddleWitdh, rightPaddleHeight);  // right paddle
-    rect(leftPaddleX, leftPaddleY, leftPaddleWidth, leftPaddleHeight); // creating the left paddle
-    ellipse(winHeight/2, winWidth/2, 10, 10);
+    //rect(rightPaddleX, rightPaddleY, rightPaddleWitdh, rightPaddleHeight);  // right paddle
+    rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height); // creating the left paddle
+    ellipse(ball.x, ball.y, ball.width, ball.height);
 
-    leftPaddleMove(); // left paddle movement 
+    leftPaddleMove(); // left paddle movement
+    ballMovement();
 }
 
 
@@ -57,33 +67,41 @@ function leftPaddleMove(){
      * of speed the paddle is being moved. Also add an additional 1 so the paddle stays inside the box.
      */
     if(keyIsDown(UP_ARROW)){
-        if(leftPaddleY < (speed + 1))   // speed here is the limit the paddle should stay at its max.
-            leftPaddleY = (speed + 1);
+        if(leftPaddle.y < (speed + 1))   // speed here is the limit the paddle should stay at its max.
+            leftPaddle.y = (speed + 1);
 
-        leftPaddleY -= speed;
+        leftPaddle.y -= speed;
     }
-
-   
     /**
      * This is the bottom side border. The bottom side border is the max winHeight minus the 
      * paddle height minus the amount of speed the paddle is moving, so the paddle doenst move out 
      * of the box.  
      */
     if(keyIsDown(DOWN_ARROW)){
-        if(leftPaddleY > winHeight - leftPaddleHeight - (speed + 1))
-            leftPaddleY = winHeight - leftPaddleHeight - (speed + 1);
+        if(leftPaddle.y > winHeight - leftPaddle.height - (speed + 1))
+            leftPaddle.y = winHeight - leftPaddle.height - (speed + 1);
 
-        leftPaddleY += speed; 
+        leftPaddle.y += speed; 
     }
-
 }
 
 /**
- * This function will be implemented for some kind of future rotation-additions(?) to have more cocaine like movements.
+ * Finding out that optimal ball speed seems to be 
  */
-function rotation() {
+function ballMovement(){
+
+    ball.x += 5;
+    ball.y += 2;
 }
 
-/**
- * This function is for creating the paddles and to make them move.
- */
+
+
+// /**
+//  * This function will be implemented for some kind of future rotation-additions(?) to have more cocaine like movements.
+//  */
+// function rotation() {
+// }
+
+// /**
+//  * This function is for creating the paddles and to make them move.
+//  */
