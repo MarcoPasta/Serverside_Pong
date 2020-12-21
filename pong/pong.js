@@ -6,38 +6,51 @@
  */
 let winHeight = 500; 
 let winWidth = 500;
-// var leftPaddleHeight = 150;
-// var leftPaddleWidth = 35;
-// var leftPaddleX = 50; 
-// var leftPaddleY = winHeight/2-150/2;
-var rightPaddleHeight = 150;
-var rightPaddleWitdh = 35;
-var rightPaddleX = winWidth-85;
-var rightPaddleY = winHeight/2-150/2;
-
 var speed = 10;
+var risingVelocity = 5;
+var pointCounter = 0;
+var domLabel;
+
 
 let leftPaddle = {
-"height": 150,
-"width": 35,
-"x": 50, 
-"y": winHeight/2-150/2
+    height: 150,
+    width: 35,
+    x: 50, 
+    y: winHeight/2-150/2
 }
 
 let ball = {
-    "x": winWidth/2,
-    "y": winHeight/2,
-    "height": 10,
-    "width": 10, 
-    "xSpeed": 10,
-    "ySpeed": 10
+    x: winWidth/2,
+    y: winHeight/2,
+    height: 10,
+    width: 10
 }
+
+
+let movement = {
+    x: 5, 
+    y: 0,
+    velocity: function (d) {
+        let l = sqrt(this.x*this.x + this.y*this.y);
+        return {
+            x: this.x / l * d,
+            y: this.y / l * d
+        }
+    }
+};
+
 
 /**
  * This draws the Canvas.
  */
 function setup() {
     createCanvas(winWidth, winHeight);
+    movement.y = random(-3,3);
+    domLabel = document.createElement("p");
+    domLabel.innerHTML = pointCounter;
+    domLabel.classList.add("pointCounter");
+    document.body.appendChild(domLabel);
+    
 }
 
 /**
@@ -49,8 +62,9 @@ function draw() {
     rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height); // creating the left paddle
     ellipse(ball.x, ball.y, ball.width, ball.height);
 
-    leftPaddleMove(); // left paddle movement
-    ballMovement();
+    leftPaddleMove();   // left paddle movement
+    ballMovement();    // Ball movement
+    risingVelocity += 0.001;
 }
 
 
@@ -85,13 +99,50 @@ function leftPaddleMove(){
     }
 }
 
+
+
 /**
  * Finding out that optimal ball speed seems to be 
  */
-function ballMovement(){
 
-    ball.x += 5;
-    ball.y += 2;
+function ballMovement(){
+    
+    /**
+     * to be edited
+     */
+
+
+    if(ball.x > winWidth - ball.width){
+        movement.x *= -1;
+        ball.x = winWidth - ball.width;
+        pointCounter++;
+        domLabel.innerHTML = pointCounter;
+
+    }
+
+    if((ball.x < (leftPaddle.x + leftPaddle.width)) && (leftPaddle.y < ball.y) && ((leftPaddle.y + leftPaddle.height) > ball.y) && ball.x > leftPaddle.x){
+        movement.x *= -1;
+        ball.x = (leftPaddle.x + leftPaddle.width) + 1;
+        movement.y = random(-3, 3);
+    }
+
+    if(ball.y < 0 + ball.height){
+        movement.y = random(0,5);
+    }
+
+    if(ball.y > winHeight - ball.height){ 
+        movement.y = random(-5, 0);
+    }
+
+    if(ball.x < 0){
+        alert("Du Kackboon");
+        noLoop();
+    }
+
+
+    ball.x += movement.velocity(risingVelocity).x;
+    ball.y += movement.velocity(risingVelocity).y;
+
 }
 
 
